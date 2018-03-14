@@ -5,13 +5,12 @@
 
 /*-----( Declare Variables )-----*/
 int      tempValue ;  // read temp value
-String   tempSwitch ;
+String   tempSwitch = "OFF" ;
 
 void setup()   /****** SETUP: RUNS ONCE ******/
 {
-  Particle.variable("tempSwitch", tempSwitch) ;
   Particle.variable("tempValue", tempValue) ;
-  tempSwitch = "OFF" ;
+  Particle.variable("tempSwitch", tempSwitch) ;
   //Serial.begin(9600);
 }
 //--(end setup )---
@@ -26,17 +25,18 @@ void loop()
   if (tempValue == HIGH && tempSwitch == "OFF") // When the sensor value exceeds the set point, LED/Buzzer is turned on
   {
     tempSwitch = "ON" ;
-    Particle.publish(tempSwitch);
+    Particle.publish("tempSwitch", tempSwitch);
   }
-  else if (tempSwitch == "ON" )
+  else if (tempValue != HIGH && tempSwitch == "ON" )
   {
     tempSwitch = "OFF" ;
-    delay(180000); // wait for cooldown cycle to finish
-    Particle.publish(tempSwitch) ;
+    /*----------( Delay for cooldown cycle to finish)---------------------*/
+    //delay(180000);
+    Particle.publish("tempSwitch", tempSwitch) ;
   }
 
-/*----------( Delay next loop for particle API)---------------------*/  
-  delay(1500);
+/*----------( Delay next loop for particle API)---------------------*/
+  delay(3000);
 
 //--(end main loop )---
 }
